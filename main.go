@@ -55,11 +55,20 @@ type Attachments struct {
 	Type string `json:"type"`
 	//Payload string `json:"payload"`
 }
+
 type SendMessage struct {
 	Recipient Recipient `json:"recipient"`
 	Message   struct {
-		Text string `json:"text"`
+		Text          string          `json:"text"`
+		Quick_replies []Quick_replies `json:"quick_replies"`
 	} `json:"message"`
+}
+
+type Quick_replies struct {
+	Content_type string `json:"content_type"`
+	Title        string `json:"title"`
+	Payload      string `json:"payload"`
+	Image_url    string `json:"image_url"`
 }
 
 type TalkJson struct {
@@ -121,7 +130,6 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 		if &event.Message != nil {
 			sendTextMessage(senderID, event.Message.Attachments[0].Type)
 		}
-
 	}
 	fmt.Fprintf(w, "Success")
 }
