@@ -127,8 +127,9 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 	for i, event := range messagingEvents {
 		senderID := event.Sender.ID
 		log.Print(i)
+		log.Print(event)
 		if &event.Message != nil {
-			sendTextMessage(senderID, event.Message.Attachments[0].Type)
+			sendTextMessage(senderID, "a")
 		}
 	}
 	fmt.Fprintf(w, "Success")
@@ -139,8 +140,14 @@ func sendTextMessage(senderID string, text string) {
 	recipient.ID = senderID
 	m := new(SendMessage)
 	m.Recipient = *recipient
+	q := []Quick_replies{
+		{Content_type: "text", Title: "a", Payload: "1"},
+		{Content_type: "text", Title: "b", Payload: "1"},
+		{Content_type: "text", Title: "c", Payload: "1"},
+	}
+	m.Message.Quick_replies = q
 	m.Message.Text = text
-
+	log.Print(m)
 	b, err := json.Marshal(m)
 	if err != nil {
 		log.Print(err)
