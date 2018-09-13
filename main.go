@@ -129,10 +129,58 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 		log.Print(i)
 		log.Print(event)
 		if &event.Message != nil {
-			sendTextMessage(senderID, "a")
+			//sendTextMessage(senderID, "a")
+			sendQuickReplies(senderID, "QuickReplies")
 		}
 	}
 	fmt.Fprintf(w, "Success")
+}
+
+func sendQuickReplies(senderID string, text string) {
+	recipient := new(Recipient)
+	recipient.ID = senderID
+	m := new(SendMessage)
+	m.Recipient = *recipient
+	q := []Quick_replies{
+		{Content_type: "text", Title: "a", Payload: "1", Image_url: "https://user-images.githubusercontent.com/28649418/45468742-385b0500-b761-11e8-879e-2a5cef3b8ddc.png"},
+		{Content_type: "text", Title: "b", Payload: "2", Image_url: "https://user-images.githubusercontent.com/28649418/45468903-17df7a80-b762-11e8-93f9-fab093c60fd7.png"},
+		{Content_type: "text", Title: "c", Payload: "3", Image_url: "https://user-images.githubusercontent.com/28649418/45468977-6260f700-b762-11e8-80c3-15fd19c8aa5f.jpeg"},
+	}
+	m.Message.Quick_replies = q
+	m.Message.Text = text
+	log.Print(m)
+	b, err := json.Marshal(m)
+	if err != nil {
+		log.Print(err)
+	}
+
+	req, err := http.NewRequest("POST", EndPoint, bytes.NewBuffer(b))
+	if err != nil {
+		log.Print(err)
+	}
+
+	values := url.Values{}
+	values.Add("access_token", accessToken)
+	req.URL.RawQuery = values.Encode()
+	req.Header.Add("Content-Type", "application/json; charset=UTF-8")
+	client := &http.Client{Timeout: time.Duration(30 * time.Second)}
+	res, err := client.Do(req)
+	if err != nil {
+		log.Print(err)
+	}
+
+	defer res.Body.Close()
+	var result map[string]interface{}
+	body, err := ioutil.ReadAll(res.Body)
+
+	if err != nil {
+		log.Print(err)
+	}
+
+	if err := json.Unmarshal(body, &result); err != nil {
+		log.Print(err)
+	}
+	log.Print(result)
 }
 
 func sendTextMessage(senderID string, text string) {
@@ -140,14 +188,7 @@ func sendTextMessage(senderID string, text string) {
 	recipient.ID = senderID
 	m := new(SendMessage)
 	m.Recipient = *recipient
-	q := []Quick_replies{
-		{Content_type: "text", Title: "a", Payload: "1"},
-		{Content_type: "text", Title: "b", Payload: "1"},
-		{Content_type: "text", Title: "c", Payload: "1"},
-	}
-	m.Message.Quick_replies = q
 	m.Message.Text = text
-	log.Print(m)
 	b, err := json.Marshal(m)
 	if err != nil {
 		log.Print(err)
