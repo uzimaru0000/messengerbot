@@ -134,26 +134,39 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 		log.Print(i)
 		log.Print(event)
 		if &event.Message != nil {
-			//sendTextMessage(senderID, "a")
-			sendQuickReplies(senderID, "QuickReplies")
+			if event.Message.Text == "QR" {
+				q := []Quick_replies{
+					{Content_type: "text", Title: "a", Payload: "a", Image_url: "https://user-images.githubusercontent.com/28649418/45468742-385b0500-b761-11e8-879e-2a5cef3b8ddc.png"},
+					{Content_type: "text", Title: "b", Payload: "b", Image_url: "https://user-images.githubusercontent.com/28649418/45468903-17df7a80-b762-11e8-93f9-fab093c60fd7.png"},
+					{Content_type: "text", Title: "c", Payload: "c", Image_url: "https://user-images.githubusercontent.com/28649418/45468977-6260f700-b762-11e8-80c3-15fd19c8aa5f.jpeg"},
+				}
+				sendQuickReplies(senderID, "QuickReplies", q)
+			} else if event.Message.Quick_reply.Payload != "" {
+				switch event.Message.Quick_reply.Payload {
+				case "a":
+					sendTextMessage(senderID, "You selected a")
+
+				case "b":
+					sendTextMessage(senderID, "You selected b")
+
+				case "c":
+					sendTextMessage(senderID, "You selected c")
+				}
+			} else {
+				sendTextMessage(senderID, "yey")
+			}
 		}
 	}
 	fmt.Fprintf(w, "Success")
 }
 
-func sendQuickReplies(senderID string, text string) {
+func sendQuickReplies(senderID string, text string, quick_replies []Quick_replies) {
 	recipient := new(Recipient)
 	recipient.ID = senderID
 	m := new(SendMessage)
 	m.Recipient = *recipient
-	q := []Quick_replies{
-		{Content_type: "text", Title: "a", Payload: "114514", Image_url: "https://user-images.githubusercontent.com/28649418/45468742-385b0500-b761-11e8-879e-2a5cef3b8ddc.png"},
-		{Content_type: "text", Title: "b", Payload: "2", Image_url: "https://user-images.githubusercontent.com/28649418/45468903-17df7a80-b762-11e8-93f9-fab093c60fd7.png"},
-		{Content_type: "text", Title: "c", Payload: "3", Image_url: "https://user-images.githubusercontent.com/28649418/45468977-6260f700-b762-11e8-80c3-15fd19c8aa5f.jpeg"},
-	}
-	m.Message.Quick_replies = q
+	m.Message.Quick_replies = quick_replies
 	m.Message.Text = text
-	log.Print(m)
 	b, err := json.Marshal(m)
 	if err != nil {
 		log.Print(err)
