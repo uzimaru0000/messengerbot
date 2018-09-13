@@ -48,12 +48,17 @@ type Message struct {
 	MID         string        `json:"mid"`
 	Seq         int           `json:"seq"`
 	Text        string        `json:"text"`
+	Quick_reply Quick_reply   `json:"quick_reply"`
 	Attachments []Attachments `json:"attachments"`
 }
 
+type Quick_reply struct {
+	Payload string `json:"payload"`
+}
+
 type Attachments struct {
-	Type string `json:"type"`
-	//Payload string `json:"payload"`
+	Type    string `json:"type"`
+	Payload string `json:"payload"`
 }
 
 type SendMessage struct {
@@ -142,7 +147,7 @@ func sendQuickReplies(senderID string, text string) {
 	m := new(SendMessage)
 	m.Recipient = *recipient
 	q := []Quick_replies{
-		{Content_type: "text", Title: "a", Payload: "1", Image_url: "https://user-images.githubusercontent.com/28649418/45468742-385b0500-b761-11e8-879e-2a5cef3b8ddc.png"},
+		{Content_type: "text", Title: "a", Payload: "114514", Image_url: "https://user-images.githubusercontent.com/28649418/45468742-385b0500-b761-11e8-879e-2a5cef3b8ddc.png"},
 		{Content_type: "text", Title: "b", Payload: "2", Image_url: "https://user-images.githubusercontent.com/28649418/45468903-17df7a80-b762-11e8-93f9-fab093c60fd7.png"},
 		{Content_type: "text", Title: "c", Payload: "3", Image_url: "https://user-images.githubusercontent.com/28649418/45468977-6260f700-b762-11e8-80c3-15fd19c8aa5f.jpeg"},
 	}
