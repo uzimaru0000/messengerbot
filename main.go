@@ -48,18 +48,32 @@ type Message struct {
 	MID         string        `json:"mid"`
 	Seq         int           `json:"seq"`
 	Text        string        `json:"text"`
+	Quick_reply Quick_reply   `json:"quick_reply"`
 	Attachments []Attachments `json:"attachments"`
 }
 
-type Attachments struct {
-	Type string `json:"type"`
-	//Payload string `json:"payload"`
+type Quick_reply struct {
+	Payload string `json:"payload"`
 }
+
+type Attachments struct {
+	Type    string `json:"type"`
+	Payload string `json:"payload"`
+}
+
 type SendMessage struct {
 	Recipient Recipient `json:"recipient"`
 	Message   struct {
-		Text string `json:"text"`
+		Text          string          `json:"text"`
+		Quick_replies []Quick_replies `json:"quick_replies"`
 	} `json:"message"`
+}
+
+type Quick_replies struct {
+	Content_type string `json:"content_type"`
+	Title        string `json:"title"`
+	Payload      string `json:"payload"`
+	Image_url    string `json:"image_url"`
 }
 
 type TalkJson struct {
@@ -118,12 +132,73 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 	for i, event := range messagingEvents {
 		senderID := event.Sender.ID
 		log.Print(i)
+		log.Print(event)
 		if &event.Message != nil {
-			sendTextMessage(senderID, event.Message.Attachments[0].Type)
-		}
+			if event.Message.Text == "QR" {
+				q := []Quick_replies{
+					{Content_type: "text", Title: "a", Payload: "a", Image_url: "https://user-images.githubusercontent.com/28649418/45468742-385b0500-b761-11e8-879e-2a5cef3b8ddc.png"},
+					{Content_type: "text", Title: "b", Payload: "b", Image_url: "https://user-images.githubusercontent.com/28649418/45468903-17df7a80-b762-11e8-93f9-fab093c60fd7.png"},
+					{Content_type: "text", Title: "c", Payload: "c", Image_url: "https://user-images.githubusercontent.com/28649418/45468977-6260f700-b762-11e8-80c3-15fd19c8aa5f.jpeg"},
+				}
+				sendQuickReplies(senderID, "QuickReplies", q)
+			} else if event.Message.Quick_reply.Payload != "" {
+				switch event.Message.Quick_reply.Payload {
+				case "a":
+					sendTextMessage(senderID, "You selected a")
 
+				case "b":
+					sendTextMessage(senderID, "You selected b")
+
+				case "c":
+					sendTextMessage(senderID, "You selected c")
+				}
+			} else {
+				sendTextMessage(senderID, "yey")
+			}
+		}
 	}
 	fmt.Fprintf(w, "Success")
+}
+
+func sendQuickReplies(senderID string, text string, quick_replies []Quick_replies) {
+	recipient := new(Recipient)
+	recipient.ID = senderID
+	m := new(SendMessage)
+	m.Recipient = *recipient
+	m.Message.Quick_replies = quick_replies
+	m.Message.Text = text
+	b, err := json.Marshal(m)
+	if err != nil {
+		log.Print(err)
+	}
+
+	req, err := http.NewRequest("POST", EndPoint, bytes.NewBuffer(b))
+	if err != nil {
+		log.Print(err)
+	}
+
+	values := url.Values{}
+	values.Add("access_token", accessToken)
+	req.URL.RawQuery = values.Encode()
+	req.Header.Add("Content-Type", "application/json; charset=UTF-8")
+	client := &http.Client{Timeout: time.Duration(30 * time.Second)}
+	res, err := client.Do(req)
+	if err != nil {
+		log.Print(err)
+	}
+
+	defer res.Body.Close()
+	var result map[string]interface{}
+	body, err := ioutil.ReadAll(res.Body)
+
+	if err != nil {
+		log.Print(err)
+	}
+
+	if err := json.Unmarshal(body, &result); err != nil {
+		log.Print(err)
+	}
+	log.Print(result)
 }
 
 func sendTextMessage(senderID string, text string) {
@@ -132,7 +207,6 @@ func sendTextMessage(senderID string, text string) {
 	m := new(SendMessage)
 	m.Recipient = *recipient
 	m.Message.Text = text
-
 	b, err := json.Marshal(m)
 	if err != nil {
 		log.Print(err)
