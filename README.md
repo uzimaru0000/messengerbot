@@ -28,6 +28,18 @@ type Quick_replies struct {
 
 <img src="https://user-images.githubusercontent.com/28649418/45469371-275fc300-b764-11e8-871e-46fbacad47df.jpg" width="540" height="200" />
 
+#### location   
+位置情報のクイック返信では、ボットから利用者の位置情報をリクエストできます。位置情報のクイック返信をタップすると、利用者が現在地の設定に使用できる検索可能な地図が表示されます。
+<img src="https://user-images.githubusercontent.com/28649418/45482681-ad423500-b789-11e8-87b8-511808ede6d5.jpg" width="540" height="200" />
+![screenshot_20180913-193942_messenger](https://user-images.githubusercontent.com/28649418/45483750-d617f980-b78c-11e8-9b1c-f620d6d15e4e.jpg)
+<img src="https://user-images.githubusercontent.com/28649418/45482736-d2cf3e80-b789-11e8-98f4-966ebe63040b.jpg" width="540" height="400" />
+
+Quick_repliesに下記のような構造体を追加します。
+
+`{Content_type: "location"}`   
+
+緯度と経度がwebhookイベントの**payload.coordinates**プロパティを介して利用者に送信されます。
+
 ### メッセージテンプレート #3 (未実装）
 https://developers.facebook.com/docs/messenger-platform/send-messages/templates
 
@@ -44,4 +56,8 @@ https://developers.facebook.com/docs/messenger-platform/send-messages/buttons
 https://developers.facebook.com/docs/messenger-platform/send-messages/persistent-menu
 
 固定メニューを使用すると、Messengerのスレッド内にユーザーインターフェイスを常に表示しておくことができます。固定メニューを表示しておけば、Messengerボットの主要な機能を利用者がいつでも簡単に利用できます。
+
+# TMP
+<img src="" width="540" height="200" />
+
 
