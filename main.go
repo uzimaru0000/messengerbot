@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strconv"
 	"time"
 )
 
@@ -57,8 +58,17 @@ type Quick_reply struct {
 }
 
 type Attachments struct {
-	Type    string `json:"type"`
-	Payload string `json:"payload"`
+	Type    string  `json:"type"`
+	Payload Payload `json:"payload"`
+}
+
+type Payload struct {
+	Coordinates Coordinates `json:"coordinates"`
+}
+
+type Coordinates struct {
+	Lat  float64 `json:"lat"`
+	Long float64 `json:"Long"`
 }
 
 type SendMessage struct {
@@ -136,11 +146,12 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 		if &event.Message != nil {
 			if event.Message.Text == "QR" {
 				q := []Quick_replies{
-					{Content_type: "text", Title: "a", Payload: "a", Image_url: "https://user-images.githubusercontent.com/28649418/45468742-385b0500-b761-11e8-879e-2a5cef3b8ddc.png"},
-					{Content_type: "text", Title: "b", Payload: "b", Image_url: "https://user-images.githubusercontent.com/28649418/45468903-17df7a80-b762-11e8-93f9-fab093c60fd7.png"},
-					{Content_type: "text", Title: "c", Payload: "c", Image_url: "https://user-images.githubusercontent.com/28649418/45468977-6260f700-b762-11e8-80c3-15fd19c8aa5f.jpeg"},
+					{Content_type: "location"},
+					{Content_type: "text", Title: "test", Payload: "test"},
 				}
 				sendQuickReplies(senderID, "QuickReplies", q)
+			} else if event.Message.Attachments != nil {
+				sendTextMessage(senderID, strconv.FormatFloat(event.Message.Attachments[0].Payload.Coordinates.Lat, 'f', 6, 64)+","+strconv.FormatFloat(event.Message.Attachments[0].Payload.Coordinates.Long, 'f', 6, 64))
 			} else if event.Message.Quick_reply.Payload != "" {
 				switch event.Message.Quick_reply.Payload {
 				case "a":
@@ -151,6 +162,8 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 
 				case "c":
 					sendTextMessage(senderID, "You selected c")
+				default:
+					sendTextMessage(senderID, "Payload: "+event.Message.Quick_reply.Payload)
 				}
 			} else {
 				sendTextMessage(senderID, "yey")
