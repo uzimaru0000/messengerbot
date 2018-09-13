@@ -1,6 +1,16 @@
 # messengerbot
 ## Usage   
+### メッセージ #1
+https://developers.facebook.com/docs/messenger-platform/send-messages
+
+Messengerプラットフォームでは、テキスト、音声、画像、動画、ファイルなど、構造化されていないさまざまな種類のコンテンツを送信できます。
+
+また、定義済みのさまざまなメッセージテンプレートを使用することによって、より工夫をこらした構造化されたメッセージを送ることができます。詳しくは、「テンプレート」をご覧ください。
+
+すべてのAPI呼び出しとリクエストプロパティのリストについては、「送信APIリファレンス」をご覧ください。
 ### クイック返信 #2
+https://developers.facebook.com/docs/messenger-platform/send-messages/quick-replies
+
 クイック返信では、タイトルと画像(任意)の付いた最大11個のボタン一式をスレッド内で使用し、作成画面にわかりやすく表示できます。また、クイック返信を使用すると、利用者の現在地、メールアドレス、電話番号をリクエストできます。
 
 `sendQuickReplies(senderID, "text", quick_replies)`
@@ -17,4 +27,21 @@ type Quick_replies struct {
 ```
 
 <img src="https://user-images.githubusercontent.com/28649418/45469371-275fc300-b764-11e8-871e-46fbacad47df.jpg" width="540" height="200" />
-https://developers.facebook.com/docs/messenger-platform/send-messages/quick-replies
+
+### メッセージテンプレート #3 (未実装）
+https://developers.facebook.com/docs/messenger-platform/send-messages/templates
+
+メッセージテンプレートを使うと、1つのメッセージを送信する際にボタン、画像、リストなどを統合することによって、通常のテキストメッセージよりも優れたスレッド内エクスペリエンスを提供できます。テンプレートは、製品情報を表示したり、事前に用意されたオプションから選択するよう促したり、検索結果を表示したりとさまざまな用途に使用できます。
+
+### ボタン #4　（未実装）
+https://developers.facebook.com/docs/messenger-platform/send-messages/buttons
+
+ほとんどのメッセージテンプレートや固定メニューでは、さまざまなアクションを実行できるボタンがサポートされています。これらのボタンを使用すると、Messengerウェブビューで開く、支払いフローを開始する、Webhookにポストバックメッセージを送るなど、テンプレートへの応答方法をメッセージの受信者に提示できます。
+
+メッセージテンプレートの場合、含まれるボタンはbuttons配列のオブジェクトで定義されます。固定メニューの場合、ボタンはcall_to_actions配列のオブジェクトで定義されます。各ボタンタイプの特定の目的とフォーマットについて詳しくは、以下をご覧ください。
+
+### 固定メニュー #5　（未実装）
+https://developers.facebook.com/docs/messenger-platform/send-messages/persistent-menu
+
+固定メニューを使用すると、Messengerのスレッド内にユーザーインターフェイスを常に表示しておくことができます。固定メニューを表示しておけば、Messengerボットの主要な機能を利用者がいつでも簡単に利用できます。
+
