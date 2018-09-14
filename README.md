@@ -28,6 +28,17 @@ type Quick_replies struct {
 
 <img src="https://user-images.githubusercontent.com/28649418/45469371-275fc300-b764-11e8-871e-46fbacad47df.jpg" width="540" height="200" />
 
+#### text
+Quick_repliesに下記のような構造体を追加します。
+```
+{
+  "content_type":"text",
+  "title":"<BUTTON_TEXT>",
+  "image_url":"http://example.com/img/red.png",
+  "payload":"<DEVELOPER_DEFINED_PAYLOAD>"
+}
+```
+
 #### location   
 位置情報のクイック返信では、ボットから利用者の位置情報をリクエストできます。位置情報のクイック返信をタップすると、利用者が現在地の設定に使用できる検索可能な地図が表示されます。
 <img src="https://user-images.githubusercontent.com/28649418/45482681-ad423500-b789-11e8-87b8-511808ede6d5.jpg" width="540" height="200" />
