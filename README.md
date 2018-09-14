@@ -8,7 +8,7 @@ Messengerプラットフォームでは、テキスト、音声、画像、動�
 また、定義済みのさまざまなメッセージテンプレートを使用することによって、より工夫をこらした構造化されたメッセージを送ることができます。詳しくは、「テンプレート」をご覧ください。
 
 すべてのAPI呼び出しとリクエストプロパティのリストについては、「送信APIリファレンス」をご覧ください。
-### クイック返信 #2 (text, location まで対応済み)
+### クイック返信 #2 (text, location, user_phone_number, user_email 対応済み)
 https://developers.facebook.com/docs/messenger-platform/send-messages/quick-replies
 
 クイック返信では、タイトルと画像(任意)の付いた最大11個のボタン一式をスレッド内で使用し、作成画面にわかりやすく表示できます。また、クイック返信を使用すると、利用者の現在地、メールアドレス、電話番号をリクエストできます。
@@ -50,6 +50,27 @@ Quick_repliesに下記のような構造体を追加します。
 `{Content_type: "location"}`   
 
 緯度と経度がwebhookイベントの**payload.coordinates**プロパティを介して利用者に送信されます。
+
+#### user_phone_number
+**この機能には、iOS用Messenger v144、またはAndroid用Messenger v142が必要です。**
+
+Quick_repliesに下記のような構造体を追加します。
+```
+{
+  "content_type":"user_phone_number"
+}
+```
+利用者がクイック返信をタップすると、携帯電話番号がmessages Webhookイベントのpayload属性に渡されます。
+#### user_email
+**この機能には、iOS用Messenger v144、またはAndroid用Messenger v142が必要です。**
+
+Quick_repliesに下記のような構造体を追加します。
+```
+{
+  "content_type":"user_email"
+}
+```
+利用者がクイック返信をタップすると、メールアドレスがmessages Webhookイベントのpayload属性に渡されます。
 
 ### メッセージテンプレート #3 (未実装）
 https://developers.facebook.com/docs/messenger-platform/send-messages/templates
