@@ -146,12 +146,16 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 		if &event.Message != nil {
 			if event.Message.Text == "QR" {
 				q := []Quick_replies{
+					{Content_type: "text", Title: "a", Payload: "a", Image_url: "https://user-images.githubusercontent.com/28649418/45468742-385b0500-b761-11e8-879e-2a5cef3b8ddc.png"},
 					{Content_type: "location"},
-					{Content_type: "text", Title: "test", Payload: "test"},
+					{Content_type: "user_phone_number"},
+					{Content_type: "user_email"},
 				}
 				sendQuickReplies(senderID, "QuickReplies", q)
 			} else if event.Message.Attachments != nil {
-				sendTextMessage(senderID, strconv.FormatFloat(event.Message.Attachments[0].Payload.Coordinates.Lat, 'f', 6, 64)+","+strconv.FormatFloat(event.Message.Attachments[0].Payload.Coordinates.Long, 'f', 6, 64))
+				if &event.Message.Attachments[0].Payload.Coordinates != nil {
+					sendTextMessage(senderID, strconv.FormatFloat(event.Message.Attachments[0].Payload.Coordinates.Lat, 'f', 6, 64)+","+strconv.FormatFloat(event.Message.Attachments[0].Payload.Coordinates.Long, 'f', 6, 64))
+				}
 			} else if event.Message.Quick_reply.Payload != "" {
 				switch event.Message.Quick_reply.Payload {
 				case "a":
