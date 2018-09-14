@@ -76,6 +76,7 @@ type SendMessage struct {
 	Message   struct {
 		Text          string          `json:"text"`
 		Quick_replies []Quick_replies `json:"quick_replies"`
+		Attachments   []Attachments   `json:"attachments"`
 	} `json:"message"`
 }
 
