@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
+	"net"
 	"net/http"
+	"net/http/fcgi"
 	"net/url"
 	"strconv"
 	"time"
@@ -98,12 +100,15 @@ type talkApiResult struct {
 }
 
 func main() {
+	l, err := net.Listen("tcp", "127.0.0.1:9000")
+		if err != nil {
+			return
+		}
 	http.HandleFunc("/", TopPageHandler)
 	http.HandleFunc("/webhook", webhookHandler)
-	port := "5000"
-	address := fmt.Sprintf(":%s", port)
-	http.ListenAndServe(address, nil)
+		fcgi.Serve(l, nil)
 }
+
 
 func TopPageHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "This is go-bot application's top page.")
