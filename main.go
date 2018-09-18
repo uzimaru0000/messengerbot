@@ -19,6 +19,7 @@ const (
 	EndPoint = "https://graph.facebook.com/v2.6/me/messages"
 )
 
+//ReceivedMessage
 type ReceivedMessage struct {
 	Object string  `json:"object"`
 	Entry  []Entry `json:"entry"`
@@ -46,24 +47,51 @@ type Recipient struct {
 }
 
 type Message struct {
-	MID         string        `json:"mid"`
-	Seq         int           `json:"seq"`
-	Text        string        `json:"text"`
-	Quick_reply Quick_reply   `json:"quick_reply"`
-	Attachments []Attachments `json:"attachments"`
+	MID         string       `json:"mid"`
+	Seq         int          `json:"seq"`
+	Text        string       `json:"text"`
+	Quick_reply Quick_reply  `json:"quick_reply"`
+	Attachments []Attachment `json:"attachments"`
 }
 
 type Quick_reply struct {
 	Payload string `json:"payload"`
 }
 
-type Attachments struct {
+type Attachment struct {
 	Type    string  `json:"type"`
 	Payload Payload `json:"payload"`
 }
 
 type Payload struct {
-	Coordinates Coordinates `json:"coordinates"`
+	Coordinates        Coordinates `json:"coordinates"`
+	Template_type      string      `json:"template_type"`
+	Sharable           bool        `json:"sharable"`
+	Image_aspect_ratio string      `json"image_aspect_ratio"`
+	Elements           []Element   `json"elements"`
+}
+type Elements struct {
+	Title          string         `json:"title"`
+	Subtitle       string         `json:"subtitle"`
+	Image_url      string         `json:"image_url"`
+	Default_action Default_action `json:"default_action"`
+	Buttons        []Button       `json"buttons"`
+}
+
+type Default_action struct {
+	Type  string `json:"type"`
+	Title string `json:"title"`
+	Url   string `json:"url"`
+}
+
+type Button struct {
+	Type                 string `json:"type"`
+	Title                string `json:"title"`
+	Url                  string `json:"url"`
+	Messenger_extensions bool   `json:"url:messenger_extensions"`
+	Webview_height_ratio string `json:"webview_height_ratio"`
+	Fallback_url         string `json:"fallback_url"`
+	Webview_share_button string `json:"webview_share_button"`
 }
 
 type Coordinates struct {
@@ -71,12 +99,29 @@ type Coordinates struct {
 	Long float64 `json:"Long"`
 }
 
-type SendMessage struct {
-	Recipient Recipient `json:"recipient"`
-	Message   struct {
+//SendMessage
+type SendMessageText struct {
+	Messaging_type string    `json:"messaging_type"`
+	Recipient      Recipient `json:"recipient"`
+	Message        struct {
 		Text          string          `json:"text"`
 		Quick_replies []Quick_replies `json:"quick_replies"`
 	} `json:"message"`
+	Sender_action     string `json:"sender_action"`
+	Notification_type string `json:"notification_type"`
+	Tag               string `json:"tag"`
+}
+
+type SendMessageAttachment struct {
+	Messaging_type string    `json:"messaging_type"`
+	Recipient      Recipient `json:"recipient"`
+	Message        struct {
+		Attachment    Attachment      `json:"attachment"`
+		Quick_replies []Quick_replies `json:"quick_replies"`
+	} `json:"message"`
+	Sender_action     string `json:"sender_action"`
+	Notification_type string `json:"notification_type"`
+	Tag               string `json:"tag"`
 }
 
 type Quick_replies struct {
@@ -152,6 +197,44 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 					{Content_type: "user_email"},
 				}
 				sendQuickReplies(senderID, "QuickReplies", q)
+			} else if event.Message.Text == "TEMPLATE" {
+				recipient := new(Recipient)
+				recipient.ID = senderID
+				m := new(SendMessageAttachment)
+				m.Recipient = *recipient
+				a := Attachment{
+					Type: "template",
+					Payload: {
+						Template_type: "generic",
+						Elements: {
+							{
+								Title:     "Welcome!",
+								Image_url: "https://petersfancybrownhats.com/company_image.png",
+								Subtitle:  "We have the right hat for everyone.",
+								Default_action: {
+									Type:                 "web_url",
+									Url:                  "https://petersfancybrownhats.com/view?item=103",
+									Messenger_extensions: false,
+									Webview_height_ratio: "tall",
+									Fallback_url:         "https://petersfancybrownhats.com/",
+								},
+								Buttons: {
+									{
+										Type:  "web_url",
+										Url:   "https://petersfancybrownhats.com",
+										Title: "View Website",
+									}, {
+										Type:    "postback",
+										Title:   "Start Chatting",
+										Payload: "DEVELOPER_DEFINED_PAYLOAD",
+									},
+								},
+							},
+						},
+					},
+				}
+				m.Attachment = a
+				PostAction(m)
 			} else if event.Message.Attachments != nil {
 				if &event.Message.Attachments[0].Payload.Coordinates != nil {
 					sendTextMessage(senderID, strconv.FormatFloat(event.Message.Attachments[0].Payload.Coordinates.Lat, 'f', 6, 64)+","+strconv.FormatFloat(event.Message.Attachments[0].Payload.Coordinates.Long, 'f', 6, 64))
@@ -180,50 +263,23 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 func sendQuickReplies(senderID string, text string, quick_replies []Quick_replies) {
 	recipient := new(Recipient)
 	recipient.ID = senderID
-	m := new(SendMessage)
+	m := new(SendMessageText)
 	m.Recipient = *recipient
 	m.Message.Quick_replies = quick_replies
 	m.Message.Text = text
-	b, err := json.Marshal(m)
-	if err != nil {
-		log.Print(err)
-	}
-
-	req, err := http.NewRequest("POST", EndPoint, bytes.NewBuffer(b))
-	if err != nil {
-		log.Print(err)
-	}
-
-	values := url.Values{}
-	values.Add("access_token", accessToken)
-	req.URL.RawQuery = values.Encode()
-	req.Header.Add("Content-Type", "application/json; charset=UTF-8")
-	client := &http.Client{Timeout: time.Duration(30 * time.Second)}
-	res, err := client.Do(req)
-	if err != nil {
-		log.Print(err)
-	}
-
-	defer res.Body.Close()
-	var result map[string]interface{}
-	body, err := ioutil.ReadAll(res.Body)
-
-	if err != nil {
-		log.Print(err)
-	}
-
-	if err := json.Unmarshal(body, &result); err != nil {
-		log.Print(err)
-	}
-	log.Print(result)
+	PostAction(m)
 }
 
 func sendTextMessage(senderID string, text string) {
 	recipient := new(Recipient)
 	recipient.ID = senderID
-	m := new(SendMessage)
+	m := new(SendMessageText)
 	m.Recipient = *recipient
 	m.Message.Text = text
+	PostAction(m)
+}
+
+func PostAction(m *SendMessageText) {
 	b, err := json.Marshal(m)
 	if err != nil {
 		log.Print(err)
