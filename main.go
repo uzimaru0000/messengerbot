@@ -70,7 +70,7 @@ type Payload struct {
 	Image_aspect_ratio string      `json"image_aspect_ratio"`
 	Elements           []Element   `json"elements"`
 }
-type Elements struct {
+type Element struct {
 	Title          string         `json:"title"`
 	Subtitle       string         `json:"subtitle"`
 	Image_url      string         `json:"image_url"`
