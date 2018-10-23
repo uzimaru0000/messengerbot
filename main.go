@@ -8,11 +8,12 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 	"time"
 )
 
-var accessToken = "EAAapjO8eyyoBANsd274NLUYfJixsO4GerD2moWkklHZCDMXLgWnvvrTaAOTE8iAHZAKXEGvZBDxZB3viYVjUbKDZCOx03M5OqTwbJ8OOkMgaJDgI2sMogHixalslOKKcdZBxuohZCxShdmJUZAsY0uI2pje9DLfTO4pyFMM1MJ6HdV6xZCwfaINPg"
+var accessToken = os.Getenv("MESSENGERBOT_TOKEN")
 var verifyToken = "3460"
 
 const (
