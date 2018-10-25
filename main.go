@@ -79,46 +79,46 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 		senderID := event.Sender.ID
 		log.Print(i)
 		log.Print(event)
-		if &event.Message != nil {
+		if event.Message != nil {
 			if event.Message.Text == "QR" {
-				q := []Quick_replies{
-					{Content_type: "text", Title: "a", Payload: "a", Image_url: "https://user-images.githubusercontent.com/28649418/45468742-385b0500-b761-11e8-879e-2a5cef3b8ddc.png"},
-					{Content_type: "location"},
-					{Content_type: "user_phone_number"},
-					{Content_type: "user_email"},
+				q := []QuickReplies{
+					{ContentType: "text", Title: "a", Payload: "a", ImageURL: "https://user-images.githubusercontent.com/28649418/45468742-385b0500-b761-11e8-879e-2a5cef3b8ddc.png"},
+					{ContentType: "location"},
+					{ContentType: "user_phone_number"},
+					{ContentType: "user_email"},
 				}
 				sendQuickReplies(senderID, "QuickReplies", q)
 			} else if event.Message.Text == "TEMPLATE" {
-				payload := Payload{
-					Template_type: "generic",
+				payload := &Payload{
+					TemplateType: "generic",
 					Elements: []Element{
 						{
-							Title:     "dennougorilla",
-							Image_url: "https://user-images.githubusercontent.com/28649418/45468977-6260f700-b762-11e8-80c3-15fd19c8aa5f.jpeg",
-							Subtitle:  "Where Do We Come From? What Are We? Where Are We Going?",
+							Title:    "dennougorilla",
+							ImageURL: "https://user-images.githubusercontent.com/28649418/45468977-6260f700-b762-11e8-80c3-15fd19c8aa5f.jpeg",
+							Subtitle: "Where Do We Come From? What Are We? Where Are We Going?",
 							Buttons: []Button{
 								Button{
 									Type:  "web_url",
-									Url:   "https://dennougorilla.tk",
+									URL:   "https://dennougorilla.tk",
 									Title: "View Website",
 								},
 							},
-							Default_action: Default_action{
+							DefaultAction: &DefaultAction{
 								Type:                "web_url",
-								Url:                 "https://github.com/dennougorilla",
+								URL:                 "https://github.com/dennougorilla",
 								MessengerExtensions: false,
 								WebViewHeightRatio:  "tall",
 							},
 						},
 					},
 				}
-				sendTemplate(senderID, &payload)
+				sendTemplate(senderID, payload)
 			} else if event.Message.Attachments != nil {
 				if &event.Message.Attachments[0].Payload.Coordinates != nil {
 					sendTextMessage(senderID, strconv.FormatFloat(event.Message.Attachments[0].Payload.Coordinates.Lat, 'f', 6, 64)+","+strconv.FormatFloat(event.Message.Attachments[0].Payload.Coordinates.Long, 'f', 6, 64))
 				}
-			} else if event.Message.Quick_reply.Payload != "" {
-				switch event.Message.Quick_reply.Payload {
+			} else if event.Message.QuickReply != nil && event.Message.QuickReply.Payload != "" {
+				switch event.Message.QuickReply.Payload {
 				case "a":
 					sendTextMessage(senderID, "You selected a")
 
@@ -128,7 +128,7 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 				case "c":
 					sendTextMessage(senderID, "You selected c")
 				default:
-					sendTextMessage(senderID, "Payload: "+event.Message.Quick_reply.Payload)
+					sendTextMessage(senderID, "Payload: "+event.Message.QuickReply.Payload)
 				}
 			}
 		}
@@ -136,12 +136,12 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "Success")
 }
 
-func sendQuickReplies(senderID string, text string, quick_replies []Quick_replies) {
+func sendQuickReplies(senderID string, text string, quickReplies []QuickReplies) {
 	recipient := new(Recipient)
 	recipient.ID = senderID
-	m := new(SendMessageText)
-	m.Recipient = *recipient
-	m.Message.Quick_replies = quick_replies
+	m := new(SendMessage)
+	m.Recipient = recipient
+	m.Message = &SendingMessage{QuickReplies: quickReplies}
 	m.Message.Text = text
 	PostAction(m)
 }
@@ -149,25 +149,26 @@ func sendQuickReplies(senderID string, text string, quick_replies []Quick_replie
 func sendTextMessage(senderID string, text string) {
 	recipient := new(Recipient)
 	recipient.ID = senderID
-	m := new(SendMessageText)
-	m.Recipient = *recipient
-	m.Message.Text = text
+	m := new(SendMessage)
+	m.Recipient = recipient
+	m.Message = &SendingMessage{Text: text}
 	PostAction(m)
 }
 
 func sendTemplate(senderID string, payload *Payload) {
-	recipient := &Recipient{senderID}
-	m := &SendMessage{}
-	m.Recipient = *recipient
+	recipient := &Recipient{ID: senderID}
+	sm := &SendMessage{}
+	sm.Recipient = recipient
 	a := &Attachment{
 		Type:    "template",
-		Payload: *payload,
+		Payload: payload,
 	}
-	m.Message.Attachment = *a
-	PostAction(m)
+	m := &SendingMessage{Attachment: a}
+	sm.Message = m
+	PostAction(sm)
 }
 
-func PostAction(m SendMessage) {
+func PostAction(m *SendMessage) {
 	b, err := json.Marshal(m)
 	if err != nil {
 		log.Print(err)
