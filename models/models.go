@@ -46,10 +46,11 @@ type Attachment struct {
 
 type Payload struct {
 	Coordinates      *Coordinates `json:"coordinates,omitempty"`
-	TemplateType     string       `json:"template_type"`
-	Sharable         bool         `json:"sharable"`
+	TemplateType     string       `json:"template_type,omitempty"`
+	TopElementStyle  string       `json:"top_element_style,omitempty"`
+	Sharable         bool         `json:"sharable,omitempty"`
 	ImageAspectRatio string       `json:"image_aspect_ratio,omitempty"`
-	Elements         []Element    `json:"elements"`
+	Elements         []Element    `json:"elements,omitempty"`
 }
 type Element struct {
 	Title         string         `json:"title"`

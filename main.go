@@ -13,6 +13,7 @@ import (
 	"time"
 
 	. "github.com/uzimaru0000/messengerbot/models"
+	"github.com/uzimaru0000/messengerbot/template"
 )
 
 var accessToken = os.Getenv("MESSENGERBOT_TOKEN")
@@ -112,7 +113,54 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 						},
 					},
 				}
-				sendTemplate(senderID, payload)
+				tmp := template.NewTemplate(senderID, payload)
+				PostAction(tmp)
+			} else if event.Message.Text == "LIST-TEMPLATE" {
+				payload := &Payload{
+					TemplateType:    "list",
+					TopElementStyle: "compact",
+					Elements: []Element{
+						{
+							Title:    "Hello-1",
+							ImageURL: "https://avatars0.githubusercontent.com/u/13715034?s=460&v=4",
+							Subtitle: "Hello!!",
+							Buttons: []Button{
+								{
+									Type:  "web_url",
+									URL:   "https://github.com/uzimaru0000",
+									Title: "View Website",
+								},
+							},
+							DefaultAction: &DefaultAction{
+								Type:                "web_url",
+								URL:                 "https://github.com/uzimaru0000",
+								MessengerExtensions: false,
+								WebViewHeightRatio:  "tall",
+							},
+						},
+						{
+							Title:    "Hello-2",
+							ImageURL: "https://avatars0.githubusercontent.com/u/13715034?s=460&v=4",
+							Subtitle: "World!",
+							Buttons: []Button{
+								{
+									Type:  "web_url",
+									URL:   "https://github.com/uzimaru0000",
+									Title: "View Website",
+								},
+							},
+							DefaultAction: &DefaultAction{
+								Type:                "web_url",
+								URL:                 "https://github.com/uzimaru0000",
+								MessengerExtensions: false,
+								WebViewHeightRatio:  "tall",
+							},
+						},
+					},
+				}
+
+				tmp := template.NewTemplate(senderID, payload)
+				PostAction(tmp)
 			} else if event.Message.Attachments != nil {
 				if &event.Message.Attachments[0].Payload.Coordinates != nil {
 					sendTextMessage(senderID, strconv.FormatFloat(event.Message.Attachments[0].Payload.Coordinates.Lat, 'f', 6, 64)+","+strconv.FormatFloat(event.Message.Attachments[0].Payload.Coordinates.Long, 'f', 6, 64))
@@ -153,19 +201,6 @@ func sendTextMessage(senderID string, text string) {
 	m.Recipient = recipient
 	m.Message = &SendingMessage{Text: text}
 	PostAction(m)
-}
-
-func sendTemplate(senderID string, payload *Payload) {
-	recipient := &Recipient{ID: senderID}
-	sm := &SendMessage{}
-	sm.Recipient = recipient
-	a := &Attachment{
-		Type:    "template",
-		Payload: payload,
-	}
-	m := &SendingMessage{Attachment: a}
-	sm.Message = m
-	PostAction(sm)
 }
 
 func PostAction(m *SendMessage) {
