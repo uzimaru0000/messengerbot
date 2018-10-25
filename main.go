@@ -65,39 +65,42 @@ type Attachment struct {
 }
 
 type Payload struct {
-	Coordinates        Coordinates `json:"coordinates"`
-	Template_type      string      `json:"template_type"`
-	Sharable           bool        `json:"sharable"`
-	Image_aspect_ratio string      `json"image_aspect_ratio"`
-	Elements           []Element   `json"elements"`
+	Coordinates        *Coordinates `json:"coordinates,omitempty"`
+	Template_type      string       `json:"template_type"`
+	Sharable           bool         `json:"sharable"`
+	Image_aspect_ratio string       `json:"image_aspect_ratio,omitempty"`
+	Elements           []Element    `json:"elements"`
 }
 type Element struct {
 	Title          string         `json:"title"`
 	Subtitle       string         `json:"subtitle"`
 	Image_url      string         `json:"image_url"`
 	Default_action Default_action `json:"default_action"`
-	Buttons        []Button       `json"buttons"`
+	Buttons        []Button       `json:"buttons"`
 }
 
 type Default_action struct {
-	Type  string `json:"type"`
-	Title string `json:"title"`
-	Url   string `json:"url"`
+	Type                string `json:"type"`
+	Title               string `json:"title,omitempty"`
+	Url                 string `json:"url"`
+	MessengerExtensions bool   `json:"messenger_extensions"`
+	WebViewHeightRatio  string `json:"webview_height_ratio"`
+	FallBackUrl         string `json:"fallback_url,omitempty"`
 }
 
 type Button struct {
-	Type                 string `json:"type"`
-	Title                string `json:"title"`
-	Url                  string `json:"url"`
-	Messenger_extensions bool   `json:"url:messenger_extensions"`
-	Webview_height_ratio string `json:"webview_height_ratio"`
-	Fallback_url         string `json:"fallback_url"`
-	Webview_share_button string `json:"webview_share_button"`
+	Type                string `json:"type"`
+	Title               string `json:"title"`
+	Url                 string `json:"url"`
+	WebViewHeightRatio  string `json:"webview_height_ratio,omitempty"`
+	MessengerExtensions bool   `json:"messenger_extensions,omitempty"`
+	FallBackUrl         string `json:"fallback_url,omitempty"`
+	WebviewShareButton  string `json:"webview_share_button,omitempty"`
 }
 
 type Coordinates struct {
-	Lat  float64 `json:"lat"`
-	Long float64 `json:"Long"`
+	Lat  float64 `json:"lat,omitempty"`
+	Long float64 `json:"Long,omitempty"`
 }
 
 //SendMessage
@@ -108,9 +111,9 @@ type SendMessageText struct {
 		Text          string          `json:"text"`
 		Quick_replies []Quick_replies `json:"quick_replies"`
 	} `json:"message"`
-	Sender_action     string `json:"sender_action"`
-	Notification_type string `json:"notification_type"`
-	Tag               string `json:"tag"`
+	Sender_action     string `json:"sender_action,omitempty"`
+	Notification_type string `json:"notification_type,omitempty"`
+	Tag               string `json:"tag,omitempty"`
 }
 
 type SendMessageAttachment struct {
@@ -120,9 +123,13 @@ type SendMessageAttachment struct {
 		Attachment    Attachment      `json:"attachment"`
 		Quick_replies []Quick_replies `json:"quick_replies"`
 	} `json:"message"`
-	Sender_action     string `json:"sender_action"`
-	Notification_type string `json:"notification_type"`
-	Tag               string `json:"tag"`
+	Sender_action     string `json:"sender_action,omitempty"`
+	Notification_type string `json:"notification_type,omitempty"`
+	Tag               string `json:"tag,omitempty"`
+}
+
+type SendMessage interface {
+	SetRecipient(recipient Recipient) SendMessage
 }
 
 type Quick_replies struct {
@@ -199,43 +206,30 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 				}
 				sendQuickReplies(senderID, "QuickReplies", q)
 			} else if event.Message.Text == "TEMPLATE" {
-				recipient := new(Recipient)
-				recipient.ID = senderID
-				m := new(SendMessageAttachment)
-				m.Recipient = *recipient
-				a := Attachment{
-					Type: "template",
-					Payload: {
-						Template_type: "generic",
-						Elements: {
-							{
-								Title:     "Welcome!",
-								Image_url: "https://petersfancybrownhats.com/company_image.png",
-								Subtitle:  "We have the right hat for everyone.",
-								Default_action: {
-									Type:                 "web_url",
-									Url:                  "https://petersfancybrownhats.com/view?item=103",
-									Messenger_extensions: false,
-									Webview_height_ratio: "tall",
-									Fallback_url:         "https://petersfancybrownhats.com/",
+				payload := Payload{
+					Template_type: "generic",
+					Elements: []Element{
+						{
+							Title:     "dennougorilla",
+							Image_url: "https://user-images.githubusercontent.com/28649418/45468977-6260f700-b762-11e8-80c3-15fd19c8aa5f.jpeg",
+							Subtitle:  "Where Do We Come From? What Are We? Where Are We Going?",
+							Buttons: []Button{
+								Button{
+									Type:  "web_url",
+									Url:   "https://dennougorilla.tk",
+									Title: "View Website",
 								},
-								Buttons: {
-									{
-										Type:  "web_url",
-										Url:   "https://petersfancybrownhats.com",
-										Title: "View Website",
-									}, {
-										Type:    "postback",
-										Title:   "Start Chatting",
-										Payload: "DEVELOPER_DEFINED_PAYLOAD",
-									},
-								},
+							},
+							Default_action: Default_action{
+								Type:                "web_url",
+								Url:                 "https://github.com/dennougorilla",
+								MessengerExtensions: false,
+								WebViewHeightRatio:  "tall",
 							},
 						},
 					},
 				}
-				m.Attachment = a
-				PostAction(m)
+				sendTemplate(senderID, &payload)
 			} else if event.Message.Attachments != nil {
 				if &event.Message.Attachments[0].Payload.Coordinates != nil {
 					sendTextMessage(senderID, strconv.FormatFloat(event.Message.Attachments[0].Payload.Coordinates.Lat, 'f', 6, 64)+","+strconv.FormatFloat(event.Message.Attachments[0].Payload.Coordinates.Long, 'f', 6, 64))
@@ -253,19 +247,27 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 				default:
 					sendTextMessage(senderID, "Payload: "+event.Message.Quick_reply.Payload)
 				}
-			} else {
-				sendTextMessage(senderID, "yey")
 			}
 		}
 	}
 	fmt.Fprintf(w, "Success")
 }
 
+func (m *SendMessageText) SetRecipient(recipient Recipient) SendMessage {
+	m.Recipient = recipient
+	return m
+}
+
+func (m *SendMessageAttachment) SetRecipient(recipient Recipient) SendMessage {
+	m.Recipient = recipient
+	return m
+}
+
 func sendQuickReplies(senderID string, text string, quick_replies []Quick_replies) {
 	recipient := new(Recipient)
 	recipient.ID = senderID
 	m := new(SendMessageText)
-	m.Recipient = *recipient
+	m.SetRecipient(*recipient)
 	m.Message.Quick_replies = quick_replies
 	m.Message.Text = text
 	PostAction(m)
@@ -275,12 +277,24 @@ func sendTextMessage(senderID string, text string) {
 	recipient := new(Recipient)
 	recipient.ID = senderID
 	m := new(SendMessageText)
-	m.Recipient = *recipient
+	m.SetRecipient(*recipient)
 	m.Message.Text = text
 	PostAction(m)
 }
 
-func PostAction(m *SendMessageText) {
+func sendTemplate(senderID string, payload *Payload) {
+	recipient := &Recipient{senderID}
+	m := &SendMessageAttachment{}
+	m.SetRecipient(*recipient)
+	a := &Attachment{
+		Type:    "template",
+		Payload: *payload,
+	}
+	m.Message.Attachment = *a
+	PostAction(m)
+}
+
+func PostAction(m SendMessage) {
 	b, err := json.Marshal(m)
 	if err != nil {
 		log.Print(err)
