@@ -1,5 +1,8 @@
 package models
 
+import "github.com/uzimaru0000/messengerbot/models/button"
+import "github.com/uzimaru0000/messengerbot/models/modifire"
+
 //ReceivedMessage
 type ReceivedMessage struct {
 	Object string  `json:"object"`
@@ -52,31 +55,22 @@ type Payload struct {
 	ImageAspectRatio string       `json:"image_aspect_ratio,omitempty"`
 	Elements         []Element    `json:"elements,omitempty"`
 }
+
 type Element struct {
-	Title         string         `json:"title"`
-	Subtitle      string         `json:"subtitle"`
-	ImageURL      string         `json:"image_url"`
-	DefaultAction *DefaultAction `json:"default_action"`
-	Buttons       []Button       `json:"buttons"`
+	Title         string          `json:"title"`
+	Subtitle      string          `json:"subtitle"`
+	ImageURL      string          `json:"image_url"`
+	DefaultAction *DefaultAction  `json:"default_action"`
+	Buttons       []button.Button `json:"buttons"`
 }
 
 type DefaultAction struct {
-	Type                string `json:"type"`
-	Title               string `json:"title,omitempty"`
-	URL                 string `json:"url"`
-	MessengerExtensions bool   `json:"messenger_extensions"`
-	WebViewHeightRatio  string `json:"webview_height_ratio"`
-	FallBackURL         string `json:"fallback_url,omitempty"`
-}
-
-type Button struct {
-	Type                string `json:"type"`
-	Title               string `json:"title"`
-	URL                 string `json:"url"`
-	WebViewHeightRatio  string `json:"webview_height_ratio,omitempty"`
-	MessengerExtensions bool   `json:"messenger_extensions,omitempty"`
-	FallBackURL         string `json:"fallback_url,omitempty"`
-	WebviewShareButton  string `json:"webview_share_button,omitempty"`
+	Type                string                      `json:"type"`
+	Title               string                      `json:"title,omitempty"`
+	URL                 string                      `json:"url"`
+	MessengerExtensions bool                        `json:"messenger_extensions"`
+	WebViewHeightRatio  modifire.WebviewHeightRatio `json:"webview_height_ratio"`
+	FallBackURL         string                      `json:"fallback_url,omitempty"`
 }
 
 type Coordinates struct {
