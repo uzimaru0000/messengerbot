@@ -5,7 +5,7 @@ import "github.com/uzimaru0000/messengerbot/models"
 type gamePlayButton struct {
 	ButtonType   models.ButtonType `json:"type"`
 	Title        string            `json:"title"`
-	Payload      string            `json: "payload"`
+	Payload      string            `json:"payload"`
 	GameMetaData *GameMetaData     `json:"game_metadata"`
 }
 

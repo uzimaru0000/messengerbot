@@ -8,9 +8,9 @@ func NewTemplate(senderID string, template *models.Template) *models.SendMessage
 	recipient := &models.Recipient{ID: senderID}
 	sm := &models.SendMessage{}
 	sm.Recipient = recipient
-	a := &models.Attachment{
-		Type:    "template",
-		Payload: template,
+	a := &models.TemplateAttachment{
+		Type:     "template",
+		Template: template,
 	}
 	m := &models.SendingMessage{Attachment: a}
 	sm.Message = m

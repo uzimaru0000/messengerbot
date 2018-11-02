@@ -44,13 +44,17 @@ type QuickReply struct {
 }
 
 type Attachment struct {
-	Type    string    `json:"type"`
-	Payload *Template `json:"payload"`
+	Type    string   `json:"type"`
+	Payload *Payload `json:"payload"`
+}
+
+type TemplateAttachment struct {
+	Type     string    `json:"type"`
+	Template *Template `json:"payload"`
 }
 
 type Payload struct {
 	Coordinates      *Coordinates `json:"coordinates,omitempty"`
-	TemplateType     string       `json:"template_type,omitempty"`
 	TopElementStyle  string       `json:"top_element_style,omitempty"`
 	Sharable         bool         `json:"sharable,omitempty"`
 	ImageAspectRatio string       `json:"image_aspect_ratio,omitempty"`
@@ -90,9 +94,9 @@ type SendMessage struct {
 }
 
 type SendingMessage struct {
-	Text         string         `json:"text,omitempty"`
-	QuickReplies []QuickReplies `json:"quick_replies,omitempty"`
-	Attachment   *Attachment    `json:"attachment,omitempty"`
+	Text         string              `json:"text,omitempty"`
+	QuickReplies []QuickReplies      `json:"quick_replies,omitempty"`
+	Attachment   *TemplateAttachment `json:"attachment,omitempty"`
 }
 
 type QuickReplies struct {
