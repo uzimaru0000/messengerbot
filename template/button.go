@@ -5,7 +5,7 @@ import (
 )
 
 type buttonTemplate struct {
-	TemplateType models.TemplateType `json:"type"`
+	TemplateType models.TemplateType `json:"template_type"`
 	Text         string              `json:"text"`
 	Buttons      []models.Button     `json:"buttons"`
 	Sharable     bool                `json:"sharable,omitempty"`

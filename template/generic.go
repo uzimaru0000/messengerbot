@@ -6,7 +6,7 @@ import (
 )
 
 type genericTemplate struct {
-	TemplateType     models.TemplateType       `json:"type"`
+	TemplateType     models.TemplateType       `json:"template_type"`
 	Elements         []models.Element          `json:"elements"`
 	Sharable         bool                      `json:"sharable,omitempty"`
 	ImageAspectRatio modifire.ImageAspectRatio `json:"image_aspect_ratio,omitempty"`

@@ -6,9 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"net"
 	"net/http"
-	"net/http/fcgi"
 	"net/url"
 	"os"
 	"time"
@@ -38,13 +36,12 @@ type talkApiResult struct {
 }
 
 func main() {
-	l, err := net.Listen("tcp", "127.0.0.1:9000")
-	if err != nil {
-		return
-	}
 	http.HandleFunc("/", TopPageHandler)
 	http.HandleFunc("/webhook", webhookHandler)
-	fcgi.Serve(l, nil)
+	port := "5000"
+	address := fmt.Sprintf(":%s", port)
+	log.Print("Server is Listen...")
+	http.ListenAndServe(address, nil)
 }
 
 func TopPageHandler(w http.ResponseWriter, r *http.Request) {
@@ -101,7 +98,7 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 						ImageURL: "https://user-images.githubusercontent.com/28649418/45468977-6260f700-b762-11e8-80c3-15fd19c8aa5f.jpeg",
 						Subtitle: "Where Do We Come From? What Are We? Where Are We Going?",
 						Buttons: []models.Button{
-							button.NewURLButton("https://dennougorilla.tk", "View Website", button.WithWebviewHeightRatio(modifire.Tall)),
+							button.NewURLButton("View Website", "https://dennougorilla.tk", button.WithWebviewHeightRatio(modifire.Tall)),
 						},
 						DefaultAction: &models.DefaultAction{
 							Type:                "web_url",
@@ -121,7 +118,7 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 						ImageURL: "https://avatars0.githubusercontent.com/u/13715034?s=460&v=4",
 						Subtitle: "Hello!!",
 						Buttons: []models.Button{
-							button.NewURLButton("https://github.com/uzimaru0000", "View Website"),
+							button.NewURLButton("View Website", "https://github.com/uzimaru0000"),
 						},
 						DefaultAction: &models.DefaultAction{
 							Type:                "web_url",
@@ -135,7 +132,7 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 						ImageURL: "https://avatars0.githubusercontent.com/u/13715034?s=460&v=4",
 						Subtitle: "World!",
 						Buttons: []models.Button{
-							button.NewURLButton("https://github.com/uzimaru0000", "View Website"),
+							button.NewURLButton("View Website", "https://github.com/uzimaru0000"),
 						},
 						DefaultAction: &models.DefaultAction{
 							Type:                "web_url",
@@ -147,6 +144,14 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 				}
 
 				tmp := template.NewListTemplate(elements)
+				msg := template.NewTemplate(senderID, &tmp)
+				PostAction(msg)
+			} else if event.Message.Text == "BUTTON-TEMPLATE" {
+				btns := []models.Button{
+					button.NewURLButton("ViewGitHub", "https://github.com/uzimaru0000"),
+					button.NewCallButton("CallMe", "+818046321998"),
+				}
+				tmp := template.NewButtonTemplate("Buttons", btns)
 				msg := template.NewTemplate(senderID, &tmp)
 				PostAction(msg)
 			} else if event.Message.QuickReply != nil && event.Message.QuickReply.Payload != "" {

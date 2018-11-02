@@ -7,7 +7,7 @@ import (
 )
 
 type mediaTemplate struct {
-	TemplateType models.TemplateType `json:"type"`
+	TemplateType models.TemplateType `json:"template_type"`
 	Elements     []MediaElement      `json:"elements"`
 	Sharable     bool                `json:"sharable,omitempty"`
 }

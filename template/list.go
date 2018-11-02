@@ -3,7 +3,7 @@ package template
 import "github.com/uzimaru0000/messengerbot/models"
 
 type listTemplate struct {
-	TemplateType    models.TemplateType `json:"type"`
+	TemplateType    models.TemplateType `json:"template_type"`
 	TopElementStyle string              `json:"top_element_style,omitempty"`
 	Buttons         []models.Button     `json:"buttons,omitempty"`
 	Elements        []models.Element    `json:"elements"`
