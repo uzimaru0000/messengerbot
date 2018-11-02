@@ -1,7 +1,10 @@
 package models
 
-import "github.com/uzimaru0000/messengerbot/models/button"
-import "github.com/uzimaru0000/messengerbot/models/modifire"
+import (
+	"github.com/uzimaru0000/messengerbot/models/button"
+	"github.com/uzimaru0000/messengerbot/models/modifire"
+	"github.com/uzimaru0000/messengerbot/models/template"
+)
 
 //ReceivedMessage
 type ReceivedMessage struct {
@@ -43,8 +46,8 @@ type QuickReply struct {
 }
 
 type Attachment struct {
-	Type    string   `json:"type"`
-	Payload *Payload `json:"payload"`
+	Type    string             `json:"type"`
+	Payload *template.Template `json:"payload"`
 }
 
 type Payload struct {

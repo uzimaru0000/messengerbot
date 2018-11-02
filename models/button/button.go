@@ -5,7 +5,7 @@ import "encoding/json"
 type ButtonType int
 
 const (
-	URL ButtonType = iota
+	URL ButtonType = iota + 1
 	Share
 	PostBack
 	Buy
