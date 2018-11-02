@@ -2,10 +2,9 @@ package template
 
 import (
 	"github.com/uzimaru0000/messengerbot/models"
-	"github.com/uzimaru0000/messengerbot/models/template"
 )
 
-func NewTemplate(senderID string, template *template.Template) *models.SendMessage {
+func NewTemplate(senderID string, template *models.Template) *models.SendMessage {
 	recipient := &models.Recipient{ID: senderID}
 	sm := &models.SendMessage{}
 	sm.Recipient = recipient

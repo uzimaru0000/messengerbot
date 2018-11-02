@@ -1,37 +1,41 @@
-package button
+package models
 
 import "encoding/json"
+
+type Button interface {
+	GetType() ButtonType
+}
 
 type ButtonType int
 
 const (
-	URL ButtonType = iota + 1
-	Share
-	PostBack
-	Buy
-	Call
-	GamePlay
-	LogIn
-	LogOut
+	URLButton ButtonType = iota + 1
+	ShareButton
+	PostBackButton
+	BuyButton
+	CallButton
+	GamePlayButton
+	LogInButton
+	LogOutButton
 )
 
 func (b ButtonType) String() string {
 	switch b {
-	case URL:
+	case URLButton:
 		return "web_url"
-	case Share:
+	case ShareButton:
 		return "element_share"
-	case PostBack:
+	case PostBackButton:
 		return "postback"
-	case Buy:
+	case BuyButton:
 		return "payment"
-	case Call:
+	case CallButton:
 		return "phone_number"
-	case GamePlay:
+	case GamePlayButton:
 		return "game_play"
-	case LogIn:
+	case LogInButton:
 		return "account_link"
-	case LogOut:
+	case LogOutButton:
 		return "account_unlink"
 	default:
 		return ""
@@ -40,8 +44,4 @@ func (b ButtonType) String() string {
 
 func (b ButtonType) MarshalJSON() ([]byte, error) {
 	return json.Marshal(b.String())
-}
-
-type Button interface {
-	GetType() ButtonType
 }

@@ -3,20 +3,20 @@ package template
 import (
 	"encoding/json"
 
-	"github.com/uzimaru0000/messengerbot/models/button"
+	"github.com/uzimaru0000/messengerbot/models"
 )
 
 type mediaTemplate struct {
-	TemplateType TemplateType   `json:"type"`
-	Elements     []MediaElement `json:"elements"`
-	Sharable     bool           `json:"sharable,omitempty"`
+	TemplateType models.TemplateType `json:"type"`
+	Elements     []MediaElement      `json:"elements"`
+	Sharable     bool                `json:"sharable,omitempty"`
 }
 
 type MediaElement struct {
 	MediaType    MediaType
 	AttachmentID string
 	URL          string
-	buttons      []button.Button
+	buttons      []models.Button
 }
 
 type MediaTemplateOption func(*mediaTemplate)
@@ -49,12 +49,12 @@ func (t *mediaTemplate) WithSharable(flag bool) MediaTemplateOption {
 	}
 }
 
-func (t *mediaTemplate) GetType() TemplateType {
+func (t *mediaTemplate) GetType() models.TemplateType {
 	return t.TemplateType
 }
 
-func NewMediaTemplate(elements []MediaElement, opts ...MediaTemplateOption) Template {
-	t := &mediaTemplate{TemplateType: Media, Elements: elements}
+func NewMediaTemplate(elements []MediaElement, opts ...MediaTemplateOption) models.Template {
+	t := &mediaTemplate{TemplateType: models.MediaTemplate, Elements: elements}
 
 	for _, opt := range opts {
 		opt(t)

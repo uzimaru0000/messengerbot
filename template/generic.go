@@ -1,12 +1,13 @@
 package template
 
 import (
+	"github.com/uzimaru0000/messengerbot/models"
 	"github.com/uzimaru0000/messengerbot/models/modifire"
 )
 
 type genericTemplate struct {
-	TemplateType     TemplateType              `json:"type"`
-	Elements         []Element                 `json:"elements"`
+	TemplateType     models.TemplateType       `json:"type"`
+	Elements         []models.Element          `json:"elements"`
 	Sharable         bool                      `json:"sharable,omitempty"`
 	ImageAspectRatio modifire.ImageAspectRatio `json:"image_aspect_ratio,omitempty"`
 }
@@ -25,12 +26,12 @@ func (t *genericTemplate) WithImageAspectRatio(ratio modifire.ImageAspectRatio) 
 	}
 }
 
-func (t *genericTemplate) GetType() TemplateType {
+func (t *genericTemplate) GetType() models.TemplateType {
 	return t.TemplateType
 }
 
-func NewGenericTemplate(elements []Element, opts ...GenericTemplateOption) Template {
-	template := &genericTemplate{TemplateType: Generic, Elements: elements}
+func NewGenericTemplate(elements []models.Element, opts ...GenericTemplateOption) models.Template {
+	template := &genericTemplate{TemplateType: models.GenericTemplate, Elements: elements}
 
 	for _, opt := range opts {
 		opt(template)

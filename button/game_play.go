@@ -1,10 +1,12 @@
 package button
 
+import "github.com/uzimaru0000/messengerbot/models"
+
 type gamePlayButton struct {
-	ButtonType   ButtonType    `json:"type"`
-	Title        string        `json:"title"`
-	Payload      string        `json: "payload"`
-	GameMetaData *GameMetaData `json:"game_metadata"`
+	ButtonType   models.ButtonType `json:"type"`
+	Title        string            `json:"title"`
+	Payload      string            `json: "payload"`
+	GameMetaData *GameMetaData     `json:"game_metadata"`
 }
 
 type GamePlayOption func(*gamePlayButton)
@@ -26,14 +28,14 @@ func WithGameMetaData(metaData *GameMetaData) GamePlayOption {
 	}
 }
 
-func NewGamePlayButton(title string, options ...GamePlayOption) Button {
-	button := &gamePlayButton{ButtonType: GamePlay, Title: title}
+func NewGamePlayButton(title string, options ...GamePlayOption) models.Button {
+	button := &gamePlayButton{ButtonType: models.GamePlayButton, Title: title}
 	for _, opt := range options {
 		opt(button)
 	}
 	return button
 }
 
-func (b *gamePlayButton) GetType() ButtonType {
+func (b *gamePlayButton) GetType() models.ButtonType {
 	return b.ButtonType
 }

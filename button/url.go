@@ -1,9 +1,12 @@
 package button
 
-import "github.com/uzimaru0000/messengerbot/models/modifire"
+import (
+	"github.com/uzimaru0000/messengerbot/models"
+	"github.com/uzimaru0000/messengerbot/models/modifire"
+)
 
 type urlButton struct {
-	ButtonType          ButtonType                  `json:"type"`
+	ButtonType          models.ButtonType           `json:"type"`
 	Title               string                      `json:"title"`
 	URL                 string                      `json:"url"`
 	WebviewHeightRatio  modifire.WebviewHeightRatio `json:"webview_height_ratio,omitempty"`
@@ -40,8 +43,8 @@ func WithWebviewShareButton(flag bool) UrlButtonOption {
 	}
 }
 
-func NewURLButton(title string, url string, opts ...UrlButtonOption) Button {
-	button := &urlButton{ButtonType: URL, Title: title, URL: url}
+func NewURLButton(title string, url string, opts ...UrlButtonOption) models.Button {
+	button := &urlButton{ButtonType: models.URLButton, Title: title, URL: url}
 
 	for _, opt := range opts {
 		opt(button)
@@ -50,6 +53,6 @@ func NewURLButton(title string, url string, opts ...UrlButtonOption) Button {
 	return button
 }
 
-func (b *urlButton) GetType() ButtonType {
+func (b *urlButton) GetType() models.ButtonType {
 	return b.ButtonType
 }

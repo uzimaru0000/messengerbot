@@ -1,9 +1,7 @@
 package models
 
 import (
-	"github.com/uzimaru0000/messengerbot/models/button"
 	"github.com/uzimaru0000/messengerbot/models/modifire"
-	"github.com/uzimaru0000/messengerbot/models/template"
 )
 
 //ReceivedMessage
@@ -46,8 +44,8 @@ type QuickReply struct {
 }
 
 type Attachment struct {
-	Type    string             `json:"type"`
-	Payload *template.Template `json:"payload"`
+	Type    string    `json:"type"`
+	Payload *Template `json:"payload"`
 }
 
 type Payload struct {
@@ -60,11 +58,11 @@ type Payload struct {
 }
 
 type Element struct {
-	Title         string          `json:"title"`
-	Subtitle      string          `json:"subtitle"`
-	ImageURL      string          `json:"image_url"`
-	DefaultAction *DefaultAction  `json:"default_action"`
-	Buttons       []button.Button `json:"buttons"`
+	Title         string         `json:"title"`
+	Subtitle      string         `json:"subtitle"`
+	ImageURL      string         `json:"image_url"`
+	DefaultAction *DefaultAction `json:"default_action"`
+	Buttons       []Button       `json:"buttons"`
 }
 
 type DefaultAction struct {
