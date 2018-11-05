@@ -92,26 +92,6 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 					{ContentType: "user_email"},
 				}
 				sendQuickReplies(senderID, "QuickReplies", q)
-			} else if event.Message.Text == "TEMPLATE" {
-				elements := []models.Element{
-					{
-						Title:    "dennougorilla",
-						ImageURL: "https://user-images.githubusercontent.com/28649418/45468977-6260f700-b762-11e8-80c3-15fd19c8aa5f.jpeg",
-						Subtitle: "Where Do We Come From? What Are We? Where Are We Going?",
-						Buttons: []models.Button{
-							button.NewURLButton("View Website", "https://dennougorilla.tk", button.WithWebviewHeightRatio(modifire.Tall)),
-						},
-						DefaultAction: &models.DefaultAction{
-							Type:                "web_url",
-							URL:                 "https://github.com/dennougorilla",
-							MessengerExtensions: false,
-							WebViewHeightRatio:  modifire.Tall,
-						},
-					},
-				}
-				tmp := template.NewGenericTemplate(elements)
-				msg := template.NewTemplate(senderID, &tmp)
-				PostAction(msg)
 			} else if event.Message.Text == "LIST-TEMPLATE" {
 				elements := []models.Element{
 					{
@@ -164,7 +144,7 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 						CallToActions: []models.MenuItem{
 							persistentmenu.NewNestedItem("Nested", []models.MenuItem{
 								persistentmenu.NewWebURLItem("View Web Pabe", "https://uzimaru0000.github.io/"),
-								persistentmenu.NewPostBackItem("Call Template", "TEMPLATE_PAYLOAD"),
+								persistentmenu.NewPostBackItem("Call Template", "CALL_TEMPLATE"),
 							}),
 						},
 					},
@@ -184,6 +164,30 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 				default:
 					sendTextMessage(senderID, "Payload: "+event.Message.QuickReply.Payload)
 				}
+			}
+		} else if event.PostBack != nil {
+			log.Print("PostBack")
+			switch event.PostBack.Payload {
+			case "CALL_TEMPLATE":
+				elements := []models.Element{
+					{
+						Title:    "dennougorilla",
+						ImageURL: "https://user-images.githubusercontent.com/28649418/45468977-6260f700-b762-11e8-80c3-15fd19c8aa5f.jpeg",
+						Subtitle: "Where Do We Come From? What Are We? Where Are We Going?",
+						Buttons: []models.Button{
+							button.NewURLButton("View Website", "https://dennougorilla.tk", button.WithWebviewHeightRatio(modifire.Tall)),
+						},
+						DefaultAction: &models.DefaultAction{
+							Type:                "web_url",
+							URL:                 "https://github.com/dennougorilla",
+							MessengerExtensions: false,
+							WebViewHeightRatio:  modifire.Tall,
+						},
+					},
+				}
+				tmp := template.NewGenericTemplate(elements)
+				msg := template.NewTemplate(senderID, &tmp)
+				PostAction(msg)
 			}
 		}
 	}

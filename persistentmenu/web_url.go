@@ -26,7 +26,7 @@ func (i *webURL) GetType() models.MenuItemType {
 }
 
 func NewWebURLItem(title string, url string, opts ...WebURLOption) models.MenuItem {
-	i := &webURL{ItemType: models.WebURL, Title: title, URL: url, MessengerExtensions: true}
+	i := &webURL{ItemType: models.WebURLItem, Title: title, URL: url, MessengerExtensions: true}
 
 	for _, opt := range opts {
 		opt(i)

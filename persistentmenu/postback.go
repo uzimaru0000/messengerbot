@@ -13,7 +13,7 @@ func (i *postBack) GetType() models.MenuItemType {
 }
 
 func NewPostBackItem(title string, payload string) models.MenuItem {
-	i := &postBack{ItemType: models.PostBack, Title: title, Payload: payload}
+	i := &postBack{ItemType: models.PostBackItem, Title: title, Payload: payload}
 
 	return i
 }

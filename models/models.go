@@ -21,6 +21,7 @@ type Messaging struct {
 	Recipient *Recipient `json:"recipient"`
 	Timestamp int        `json:"timestamp"`
 	Message   *Message   `json:"message"`
+	PostBack  *PostBack  `json:"postback"`
 }
 
 type Sender struct {
@@ -37,6 +38,11 @@ type Message struct {
 	Text        string       `json:"text"`
 	QuickReply  *QuickReply  `json:"quick_reply"`
 	Attachments []Attachment `json:"attachments"`
+}
+
+type PostBack struct {
+	Payload string `json:"payload"`
+	Title   string `json:"title"`
 }
 
 type QuickReply struct {

@@ -13,5 +13,5 @@ func (i *nestedItem) GetType() models.MenuItemType {
 }
 
 func NewNestedItem(title string, actions []models.MenuItem) models.MenuItem {
-	return &nestedItem{ItemType: models.Nested, Title: title, CallToActions: actions}
+	return &nestedItem{ItemType: models.NestedItem, Title: title, CallToActions: actions}
 }

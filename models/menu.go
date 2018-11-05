@@ -11,18 +11,18 @@ type PersistentMenu struct {
 type MenuItemType int
 
 const (
-	WebURL MenuItemType = iota
-	PostBack
-	Nested
+	WebURLItem MenuItemType = iota
+	PostBackItem
+	NestedItem
 )
 
 func (t MenuItemType) String() string {
 	switch t {
-	case WebURL:
+	case WebURLItem:
 		return "web_url"
-	case PostBack:
+	case PostBackItem:
 		return "postback"
-	case Nested:
+	case NestedItem:
 		return "nested"
 	default:
 		return "web_url"
