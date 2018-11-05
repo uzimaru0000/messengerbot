@@ -43,10 +43,8 @@ func (m MediaType) MarshalJSON() ([]byte, error) {
 	return json.Marshal(m.String())
 }
 
-func (t *mediaTemplate) WithSharable(flag bool) MediaTemplateOption {
-	return func(t *mediaTemplate) {
-		t.Sharable = flag
-	}
+func (t *mediaTemplate) SetSharable(flag bool) {
+	t.Sharable = flag
 }
 
 func (t *mediaTemplate) GetType() models.TemplateType {

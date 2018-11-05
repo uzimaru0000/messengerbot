@@ -11,24 +11,16 @@ type buttonTemplate struct {
 	Sharable     bool                `json:"sharable,omitempty"`
 }
 
-type ButtonTemplateOption func(*buttonTemplate)
-
-func (t *buttonTemplate) WithSharable(flag bool) ButtonTemplateOption {
-	return func(t *buttonTemplate) {
-		t.Sharable = flag
-	}
+func (t *buttonTemplate) SetSharable(flag bool) {
+	t.Sharable = flag
 }
 
 func (t *buttonTemplate) GetType() models.TemplateType {
 	return t.TemplateType
 }
 
-func NewButtonTemplate(text string, buttons []models.Button, opts ...ButtonTemplateOption) models.Template {
+func NewButtonTemplate(text string, buttons []models.Button) models.Template {
 	t := &buttonTemplate{TemplateType: models.ButtonTemplate, Text: text, Buttons: buttons}
-
-	for _, opt := range opts {
-		opt(t)
-	}
 
 	return t
 }

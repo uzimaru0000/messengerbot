@@ -28,10 +28,8 @@ func (t *listTemplate) WithButtons(btns []models.Button) ListTemplateOption {
 	}
 }
 
-func (t *listTemplate) WithSharable(flag bool) ListTemplateOption {
-	return func(t *listTemplate) {
-		t.Sharable = flag
-	}
+func (t *listTemplate) SetSharable(flag bool) {
+	t.Sharable = flag
 }
 
 func NewListTemplate(elements []models.Element, opts ...ListTemplateOption) models.Template {

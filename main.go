@@ -14,6 +14,7 @@ import (
 	"github.com/uzimaru0000/messengerbot/button"
 	"github.com/uzimaru0000/messengerbot/models"
 	"github.com/uzimaru0000/messengerbot/models/modifire"
+	"github.com/uzimaru0000/messengerbot/persistentmenu"
 	"github.com/uzimaru0000/messengerbot/template"
 )
 
@@ -150,10 +151,26 @@ func webhookPostAction(w http.ResponseWriter, r *http.Request) {
 				btns := []models.Button{
 					button.NewURLButton("ViewGitHub", "https://github.com/uzimaru0000"),
 					button.NewCallButton("CallMe", "+818046321998"),
+					button.NewPostBackButton("Call Template", "TEMPLATE"),
 				}
 				tmp := template.NewButtonTemplate("Buttons", btns)
 				msg := template.NewTemplate(senderID, &tmp)
 				PostAction(msg)
+			} else if event.Message.Text == "SET-MENU" {
+				menu := []models.PersistentMenu{
+					{
+						Locale:                "default",
+						ComposerInputDisabled: false,
+						CallToActions: []models.MenuItem{
+							persistentmenu.NewNestedItem("Nested", []models.MenuItem{
+								persistentmenu.NewWebURLItem("View Web Pabe", "https://uzimaru0000.github.io/"),
+								persistentmenu.NewPostBackItem("Call Template", "TEMPLATE_PAYLOAD"),
+							}),
+						},
+					},
+				}
+
+				persistentmenu.SetPersistentMenu(accessToken, menu)
 			} else if event.Message.QuickReply != nil && event.Message.QuickReply.Payload != "" {
 				switch event.Message.QuickReply.Payload {
 				case "a":

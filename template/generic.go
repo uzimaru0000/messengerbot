@@ -14,10 +14,8 @@ type genericTemplate struct {
 
 type GenericTemplateOption func(*genericTemplate)
 
-func (t *genericTemplate) WithSharable(flag bool) GenericTemplateOption {
-	return func(t *genericTemplate) {
-		t.Sharable = flag
-	}
+func (t *genericTemplate) SetSharable(flag bool) {
+	t.Sharable = flag
 }
 
 func (t *genericTemplate) WithImageAspectRatio(ratio modifire.ImageAspectRatio) GenericTemplateOption {

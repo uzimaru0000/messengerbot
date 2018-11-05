@@ -8,6 +8,7 @@ type TemplateType int
 
 type Template interface {
 	GetType() TemplateType
+	SetSharable(bool)
 }
 
 type TemplateOption func(*Template)
