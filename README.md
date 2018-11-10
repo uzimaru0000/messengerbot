@@ -72,10 +72,34 @@ Quick_repliesに下記のような構造体を追加します。
 ```
 利用者がクイック返信をタップすると、メールアドレスがmessages Webhookイベントのpayload属性に渡されます。
 
-### メッセージテンプレート #3 (未実装）
+### メッセージテンプレート #3
 https://developers.facebook.com/docs/messenger-platform/send-messages/templates
 
-メッセージテンプレートを使うと、1つのメッセージを送信する際にボタン、画像、リストなどを統合することによって、通常のテキストメッセージよりも優れたスレッド内エクスペリエンスを提供できます。テンプレートは、製品情報を表示したり、事前に用意されたオプションから選択するよう促したり、検索結果を表示したりとさまざまな用途に使用できます。
+メッセージテンプレートを使うと、1つのメッセージを送信する際にボタン、画像、リストなどを統合することによって、通常のテキストメッセージよりも優れたスレッド内エクスペリエンスを提供できます。テンプレートは、製品情報を表示したり、事前に用意されたオプションから選択するよう促したり、検索結果を表示したりとさまざまな用途に使用できます。  
+
+#### ButtonTemplate
+ボタンテンプレートでは、最大3つのボタンがあるテキストメッセージを送信します。このテンプレートは、事前定義された質問への回答やアクションといった選択肢を受信者に提供する場合に便利です。  
+
+`template.NewButtonTemplate(title string, buttons []models.Button)`  
+新しいButtonTemplateを作成します
+
+#### ListTemplate
+リストテンプレートは、2～4つの構造化アイテムと、任意のグローバルボタンが下部に配置されたリストです。各アイテムにはサムネイル画像、タイトル、サブタイトル、1つのボタンを含めることができます。  
+`template.NewListTemplate()`
+新しいListTemplateを作成します
+
+#### GenericTemplate
+一般テンプレートは、タイトル、サブタイトル、画像、最大3つのボタンが含まれる簡単な構造化メッセージです。  
+`template.NewGenericTemplate()`  
+新しいGenericTemplateを作成します
+
+#### MediaTemplate
+メディアテンプレートでは、画像、GIF、動画を構造化メッセージとして、任意のボタンとともに送信できます。メディアテンプレートで送信された動画とアニメーションGIFは、スレッド内で再生できます。  
+`template.NewMediaTemplate()`  
+新しいMediatemplateを作成します
+  
+`template.NewTemplate(senderID string, template *models.Template) *models.SendMessage`  
+Templateインターフェースを実装した構造体からテンプレートのSendMessageを生成します
 
 ### ボタン #4　（未実装）
 https://developers.facebook.com/docs/messenger-platform/send-messages/buttons
