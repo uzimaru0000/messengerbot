@@ -17,6 +17,7 @@ const (
 	GamePlayButton
 	LogInButton
 	LogOutButton
+	Nested
 )
 
 func (b ButtonType) String() string {
@@ -37,6 +38,8 @@ func (b ButtonType) String() string {
 		return "account_link"
 	case LogOutButton:
 		return "account_unlink"
+	case Nested:
+		return "nested"
 	default:
 		return ""
 	}
