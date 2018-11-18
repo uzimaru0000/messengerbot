@@ -4,6 +4,7 @@ import (
 	"github.com/uzimaru0000/messengerbot/models"
 )
 
+// NewTemplate is create TemplateMessage
 func NewTemplate(senderID string, template *models.Template) *models.SendMessage {
 	recipient := &models.Recipient{ID: senderID}
 	sm := &models.SendMessage{}

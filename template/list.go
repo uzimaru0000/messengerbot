@@ -10,19 +10,22 @@ type listTemplate struct {
 	Sharable        bool                `json:"sharable,omitempty"`
 }
 
+// ListTemplateOption is type of function which set option to ListTemplate
 type ListTemplateOption func(*listTemplate)
 
 func (t *listTemplate) GetType() models.TemplateType {
 	return t.TemplateType
 }
 
-func (t *listTemplate) WithTopElementStyle(style string) ListTemplateOption {
+// WithTopElementStyle is setting TopElementStyle to ListTemplate
+func WithTopElementStyle(style string) ListTemplateOption {
 	return func(t *listTemplate) {
 		t.TopElementStyle = style
 	}
 }
 
-func (t *listTemplate) WithButtons(btns []models.Button) ListTemplateOption {
+// WithButtons is setting Buttons to ListTemplate
+func WithButtons(btns []models.Button) ListTemplateOption {
 	return func(t *listTemplate) {
 		t.Buttons = btns
 	}
@@ -32,6 +35,7 @@ func (t *listTemplate) SetSharable(flag bool) {
 	t.Sharable = flag
 }
 
+// NewListTemplate is create ButtonTemplate
 func NewListTemplate(elements []models.Element, opts ...ListTemplateOption) models.Template {
 	t := &listTemplate{Elements: elements}
 

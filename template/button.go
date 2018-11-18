@@ -19,6 +19,7 @@ func (t *buttonTemplate) GetType() models.TemplateType {
 	return t.TemplateType
 }
 
+// NewButtonTemplate is create ButtonTemplate
 func NewButtonTemplate(text string, buttons []models.Button) models.Template {
 	t := &buttonTemplate{TemplateType: models.ButtonTemplate, Text: text, Buttons: buttons}
 

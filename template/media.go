@@ -12,6 +12,7 @@ type mediaTemplate struct {
 	Sharable     bool                `json:"sharable,omitempty"`
 }
 
+// MediaElement is element which MediaTemplate
 type MediaElement struct {
 	MediaType    MediaType
 	AttachmentID string
@@ -19,10 +20,13 @@ type MediaElement struct {
 	buttons      []models.Button
 }
 
+// MediaTemplateOption is type of function which set option to MediaTemplate
 type MediaTemplateOption func(*mediaTemplate)
 
+// MediaType is type of media to image or video.
 type MediaType int
 
+// Image -> graphics, Video -> movies
 const (
 	Image MediaType = iota + 1
 	Video
@@ -51,6 +55,7 @@ func (t *mediaTemplate) GetType() models.TemplateType {
 	return t.TemplateType
 }
 
+// NewMediaTemplate is create MediaTemplate
 func NewMediaTemplate(elements []MediaElement, opts ...MediaTemplateOption) models.Template {
 	t := &mediaTemplate{TemplateType: models.MediaTemplate, Elements: elements}
 

@@ -18,16 +18,13 @@ type deleteProperty struct {
 	Fields []string `json:"fields"`
 }
 
+// Properties is a message sent to API.
 type Properties struct {
 	PersistentMenu []models.PersistentMenu `json:"persistent_menu"`
 	*models.AccountLink
 	*models.Start `json:"get_started"`
 	Greetings     []models.Greeting `json:"greeting"`
 	*models.WhitelistDomain
-}
-
-type SettingProperies struct {
-	Data []map[string]interface{} `json:"data"`
 }
 
 func (p *deleteProperty) GetPropertyName() string {
@@ -57,6 +54,7 @@ func send(method string, accessToken string, body []byte) ([]byte, error) {
 	return ioutil.ReadAll(res.Body)
 }
 
+// SetProperties is sending setting properties to MessengerProfileAPI
 func SetProperties(accessToken string, properties *Properties) error {
 	body, err := json.Marshal(properties)
 	if err != nil {
@@ -68,6 +66,7 @@ func SetProperties(accessToken string, properties *Properties) error {
 	return err
 }
 
+// DeleteProperties is sending delete properties to MessengerProfileAPI
 func DeleteProperties(accessToken string, propertis []models.Property) error {
 	del := &deleteProperty{}
 
