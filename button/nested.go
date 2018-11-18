@@ -12,6 +12,7 @@ func (i *nestedItem) GetType() models.ButtonType {
 	return i.ItemType
 }
 
+// NewNestedButton is instancing call button
 func NewNestedButton(title string, actions []models.Button) models.Button {
 	return &nestedItem{ItemType: models.Nested, Title: title, CallToActions: actions}
 }

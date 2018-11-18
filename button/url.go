@@ -15,27 +15,32 @@ type urlButton struct {
 	WebviewShareButton  string                      `json:"webview_share_button,omitempty"`
 }
 
-type UrlButtonOption func(*urlButton)
+// URLButtonOption is type of function which set option to UrlButton
+type URLButtonOption func(*urlButton)
 
-func WithWebviewHeightRatio(ratio modifire.WebviewHeightRatio) UrlButtonOption {
+// WithWebviewHeightRatio is setting WebviewHeightRatio to UrlButton
+func WithWebviewHeightRatio(ratio modifire.WebviewHeightRatio) URLButtonOption {
 	return func(b *urlButton) {
 		b.WebviewHeightRatio = ratio
 	}
 }
 
-func WithMessengerExtensions(flag bool) UrlButtonOption {
+// WithMessengerExtensions is setting MessengerExtensions to UrlButton
+func WithMessengerExtensions(flag bool) URLButtonOption {
 	return func(b *urlButton) {
 		b.MessengerExtensions = flag
 	}
 }
 
-func WithFallbackURL(url string) UrlButtonOption {
+// WithFallbackURL is setting FallbackURL to UrlButton
+func WithFallbackURL(url string) URLButtonOption {
 	return func(b *urlButton) {
 		b.FallbackURL = url
 	}
 }
 
-func WithWebviewShareButton(flag bool) UrlButtonOption {
+// WithWebviewShareButton is setting WebviewShareButton to UrlButton
+func WithWebviewShareButton(flag bool) URLButtonOption {
 	return func(b *urlButton) {
 		if !flag {
 			b.WebviewShareButton = "hide"
@@ -43,7 +48,8 @@ func WithWebviewShareButton(flag bool) UrlButtonOption {
 	}
 }
 
-func NewURLButton(title string, url string, opts ...UrlButtonOption) models.Button {
+// NewURLButton is instancing call button
+func NewURLButton(title string, url string, opts ...URLButtonOption) models.Button {
 	button := &urlButton{ButtonType: models.URLButton, Title: title, URL: url}
 
 	for _, opt := range opts {

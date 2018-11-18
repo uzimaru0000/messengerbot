@@ -8,6 +8,7 @@ type postBackButton struct {
 	Payload    string            `json:"payload"`
 }
 
+// NewPostBackButton is instancing call button
 func NewPostBackButton(title string, payload string) models.Button {
 	return &postBackButton{ButtonType: models.PostBackButton, Title: title, Payload: payload}
 }

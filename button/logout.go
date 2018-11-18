@@ -10,6 +10,7 @@ func (b *logoutButton) GetType() models.ButtonType {
 	return b.ButtonType
 }
 
+// NewLogoutButton is instancing call button
 func NewLogoutButton() models.Button {
 	return &logoutButton{ButtonType: models.LogOutButton}
 }

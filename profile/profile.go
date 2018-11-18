@@ -12,7 +12,7 @@ import (
 	"github.com/uzimaru0000/messengerbot/models"
 )
 
-const EndPoint = "https://graph.facebook.com/v2.6/me/messenger_profile"
+const endPoint = "https://graph.facebook.com/v2.6/me/messenger_profile"
 
 type deleteProperty struct {
 	Fields []string `json:"fields"`
@@ -36,7 +36,7 @@ func (p *deleteProperty) GetPropertyName() string {
 
 func send(method string, accessToken string, body []byte) ([]byte, error) {
 
-	req, err := http.NewRequest(method, EndPoint, bytes.NewBuffer(body))
+	req, err := http.NewRequest(method, endPoint, bytes.NewBuffer(body))
 	if err != nil {
 		log.Print(err)
 		return nil, err
