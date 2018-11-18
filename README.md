@@ -101,12 +101,15 @@ https://developers.facebook.com/docs/messenger-platform/send-messages/templates
 `template.NewTemplate(senderID string, template *models.Template) *models.SendMessage`  
 Templateインターフェースを実装した構造体からテンプレートのSendMessageを生成します
 
-### ボタン #4　（未実装）
+### ボタン #4
 https://developers.facebook.com/docs/messenger-platform/send-messages/buttons
 
 ほとんどのメッセージテンプレートや固定メニューでは、さまざまなアクションを実行できるボタンがサポートされています。これらのボタンを使用すると、Messengerウェブビューで開く、支払いフローを開始する、Webhookにポストバックメッセージを送るなど、テンプレートへの応答方法をメッセージの受信者に提示できます。
 
 メッセージテンプレートの場合、含まれるボタンはbuttons配列のオブジェクトで定義されます。固定メニューの場合、ボタンはcall_to_actions配列のオブジェクトで定義されます。各ボタンタイプの特定の目的とフォーマットについて詳しくは、以下をご覧ください。
+
+ボタンの種類は、`URL`, `PostBack`, `Call`, `GamePlay`, `LogIn`, `LogOut`, `Share`の7種類あります。  
+それぞれ`New[BUTTON_TYPE]Button(params)`で生成することができます。
 
 ### 固定メニュー #5　（未実装）
 https://developers.facebook.com/docs/messenger-platform/send-messages/persistent-menu
